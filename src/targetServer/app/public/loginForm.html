@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF hack | Login</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
+</head>
+
+<body class="dark-mode" style="justify-content: center;">
+    <form id="login-form">
+        <input type="text" name="userName" id="userName" placeholder="< User Name >" autocomplete="username">
+        <input type="password" name="password" id="password" placeholder="< Password >" autocomplete="current-password">
+        <div id="errorMessage">
+        </div>
+        <input id="submit" type="submit" value="Send">
+    </form>
+    <div>
+    <button id="forgetButton" class="forget_returnButton btn secondary-content">
+        <a href="/forget">
+            <p>Forget password?</p>
+        </a>
+    </button>
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('errorMessage');
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const { userName, password } = loginForm.elements;
+            fetch('/api/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    userName: userName.value,
+                    password: password.value
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    data.redirectUrl !== undefined ?
+                        window.location.href = `${data.redirectUrl}?id=${data.id}` :
+                        data.error !== undefined ? errorMessage.innerHTML = `<p >error: ${data.error} </p>` : ""
+
+                })
+                .catch(error => console.error(""));
+        });
+    </script>
+</body>
+
+</html>

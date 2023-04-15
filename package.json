@@ -1,0 +1,24 @@
+{
+  "name": "csrf-hack",
+  "version": "1.0.0",
+  "description": "Study case for CSRF protection",
+  "main": "index.js",
+  "scripts": {
+    "dev_target": "nodemon ./src/targetServer/app/index.js",
+    "dev_attack": "nodemon ./src/attackServer/index.js",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "connect-flash-plus": "^0.2.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

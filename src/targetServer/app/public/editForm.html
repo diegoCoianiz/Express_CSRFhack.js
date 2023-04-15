@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF hack | Edit</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
+</head>
+
+<body class="dark-mode" style="justify-content: center;">
+    <form id="login-form">
+        <input type="email" name="newFlag" id="newFlag" placeholder="< New email >">
+        <input id="submit" type="submit" value="Send new flag">
+    </form>
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const queryParams = new URLSearchParams(window.location.search);
+        const id = queryParams.get('id');
+
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            fetch('/api/edit/csrfToken')
+                .then(response => response.json())
+                .then(data => {
+                    const secret = data.token;
+
+                    const { newFlag } = loginForm.elements;
+                    fetch('/api/edit', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            newFlag: newFlag.value,
+                            csrf: secret
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            data.redirectUrl !== undefined ?
+                                window.location.href =`${data.redirectUrl}?id=${id}`  : ""
+                        })
+                        .catch(error => console.error(""));
+                });
+        });
+    </script>
+</body>
+
+</html>

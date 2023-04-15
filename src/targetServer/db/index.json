@@ -1,0 +1,8 @@
+[
+    {
+        "id":1,
+        "userName": "user",
+        "password":"pass",
+        "flag": "test.email@targetServer.com"
+    }
+]
